@@ -19,9 +19,11 @@ COPY . .
 
 # Accept build arguments
 ARG NEXT_PUBLIC_API_BASE_URL
+ARG INTERNAL_API_ORIGIN=http://host.docker.internal:6600
 
 # Set environment variables for build
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV INTERNAL_API_ORIGIN=$INTERNAL_API_ORIGIN
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry

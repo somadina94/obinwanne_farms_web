@@ -9,9 +9,12 @@ services:
       dockerfile: Dockerfile
       args:
         - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+        - INTERNAL_API_ORIGIN=${INTERNAL_API_ORIGIN:-http://host.docker.internal:6600}
     container_name: obinwanne-farms-web
     ports:
       - "6601:6601"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - NODE_ENV=production
     restart: unless-stopped
