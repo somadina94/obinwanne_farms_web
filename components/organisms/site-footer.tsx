@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPinned } from "lucide-react";
+import { Mail, MapPin, MapPinned, Phone } from "lucide-react";
 
 import { Logo } from "@/components/atoms/logo";
 import {
@@ -63,17 +63,29 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-8 rounded-2xl border border-border/60 bg-background/70 p-4 text-sm text-muted-foreground">
-          <p>
-            <span className="font-medium text-foreground">Address:</span> {COMPANY_ADDRESS}
+          <p className="flex items-start gap-2">
+            <MapPin className="mt-0.5 size-4 text-primary" />
+            <span>
+              <span className="font-medium text-foreground">Address:</span> {COMPANY_ADDRESS}
+            </span>
           </p>
-          <p className="mt-1">
-            <span className="font-medium text-foreground">Phone:</span> {COMPANY_PHONE}
+          <p className="mt-1 flex items-center gap-2">
+            <Phone className="size-4 text-primary" />
+            <span>
+              <span className="font-medium text-foreground">Phone:</span>{" "}
+              <a href={`tel:${COMPANY_PHONE}`} className="text-primary hover:underline">
+                {COMPANY_PHONE}
+              </a>
+            </span>
           </p>
-          <p className="mt-1">
-            <span className="font-medium text-foreground">Email:</span>{" "}
-            <a href={`mailto:${COMPANY_EMAIL}`} className="text-primary hover:underline">
-              {COMPANY_EMAIL}
-            </a>
+          <p className="mt-1 flex items-center gap-2">
+            <Mail className="size-4 text-primary" />
+            <span>
+              <span className="font-medium text-foreground">Email:</span>{" "}
+              <a href={`mailto:${COMPANY_EMAIL}`} className="text-primary hover:underline">
+                {COMPANY_EMAIL}
+              </a>
+            </span>
           </p>
           <p className="mt-2">
             <a

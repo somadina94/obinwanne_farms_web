@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, MapPinned, MapPin, Phone } from "lucide-react";
+import { Loader2, Mail, MapPinned, MapPin, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -82,7 +82,9 @@ export default function ContactPage() {
               </p>
               <p className="flex items-center gap-3">
                 <Phone className="size-4 text-primary" />
-                <span>{COMPANY_PHONE}</span>
+                <a href={`tel:${COMPANY_PHONE}`} className="font-medium text-primary hover:underline">
+                  {COMPANY_PHONE}
+                </a>
               </p>
               <p className="flex items-center gap-3">
                 <MapPinned className="size-4 text-primary" />
@@ -95,8 +97,8 @@ export default function ContactPage() {
                   View address on map
                 </a>
               </p>
-              <p>
-                Email:{" "}
+              <p className="flex items-center gap-3">
+                <Mail className="size-4 text-primary" />
                 <a href={`mailto:${COMPANY_EMAIL}`} className="font-medium text-primary hover:underline">
                   {COMPANY_EMAIL}
                 </a>
