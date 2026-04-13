@@ -1,0 +1,25 @@
+version: "3.8"
+
+name: obinwanne-farms-web
+
+services:
+  obinwanne-farms-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+    container_name: obinwanne-farms-web
+    ports:
+      - "6601:6601"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - obinwanne-farms-network
+
+networks:
+  obinwanne-farms-network:
+    driver: bridge
