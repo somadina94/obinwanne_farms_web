@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, MapPin, Phone } from "lucide-react";
+import { Loader2, MapPinned, MapPin, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -18,6 +18,7 @@ import {
   COMPANY_ADDRESS,
   COMPANY_BUSINESS_HOURS,
   COMPANY_EMAIL,
+  COMPANY_MAP_URL,
   COMPANY_PHONE,
   SITE_NAME,
 } from "@/lib/constants";
@@ -82,6 +83,17 @@ export default function ContactPage() {
               <p className="flex items-center gap-3">
                 <Phone className="size-4 text-primary" />
                 <span>{COMPANY_PHONE}</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <MapPinned className="size-4 text-primary" />
+                <a
+                  href={COMPANY_MAP_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-primary hover:underline"
+                >
+                  View address on map
+                </a>
               </p>
               <p>
                 Email:{" "}

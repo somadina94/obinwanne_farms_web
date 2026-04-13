@@ -1,7 +1,14 @@
 import Link from "next/link";
+import { MapPinned } from "lucide-react";
 
 import { Logo } from "@/components/atoms/logo";
-import { COMPANY_ADDRESS, COMPANY_EMAIL, COMPANY_PHONE, SITE_NAME } from "@/lib/constants";
+import {
+  COMPANY_ADDRESS,
+  COMPANY_EMAIL,
+  COMPANY_MAP_URL,
+  COMPANY_PHONE,
+  SITE_NAME,
+} from "@/lib/constants";
 
 export function SiteFooter() {
   return (
@@ -66,6 +73,17 @@ export function SiteFooter() {
             <span className="font-medium text-foreground">Email:</span>{" "}
             <a href={`mailto:${COMPANY_EMAIL}`} className="text-primary hover:underline">
               {COMPANY_EMAIL}
+            </a>
+          </p>
+          <p className="mt-2">
+            <a
+              href={COMPANY_MAP_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-primary hover:underline"
+            >
+              <MapPinned className="size-4" />
+              View address on map
             </a>
           </p>
         </div>

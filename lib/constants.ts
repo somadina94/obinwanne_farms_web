@@ -18,3 +18,17 @@ export const COMPANY_EMAIL =
 export const COMPANY_BUSINESS_HOURS =
   process.env.NEXT_PUBLIC_COMPANY_BUSINESS_HOURS ??
   "Monday - Saturday, 9:00 AM - 5:00 PM (WAT)";
+
+const COMPANY_LATITUDE = process.env.NEXT_PUBLIC_COMPANY_LATITUDE;
+const COMPANY_LONGITUDE =
+  process.env.NEXT_PUBLIC_COMPANY_LONGITUDE ??
+  process.env.NEXT_PUBLIC_COMPANY_LONGGITUDE;
+
+const hasCoordinates = Boolean(COMPANY_LATITUDE && COMPANY_LONGITUDE);
+const mapQuery = hasCoordinates
+  ? `${COMPANY_LATITUDE},${COMPANY_LONGITUDE}`
+  : COMPANY_ADDRESS;
+
+export const COMPANY_MAP_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  mapQuery,
+)}`;
