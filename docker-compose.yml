@@ -9,6 +9,9 @@ services:
       dockerfile: Dockerfile
       args:
         - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+        - NEXT_PUBLIC_COMPANY_ADDRESS=${NEXT_PUBLIC_COMPANY_ADDRESS}
+        - NEXT_PUBLIC_COMPANY_PHONE=${NEXT_PUBLIC_COMPANY_PHONE}
+        - NEXT_PUBLIC_COMPANY_BUSINESS_HOURS=${NEXT_PUBLIC_COMPANY_BUSINESS_HOURS}
         - INTERNAL_API_ORIGIN=${INTERNAL_API_ORIGIN:-http://host.docker.internal:6600}
     container_name: obinwanne-farms-web
     ports:
@@ -17,6 +20,9 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       - NODE_ENV=production
+      - NEXT_PUBLIC_COMPANY_ADDRESS=${NEXT_PUBLIC_COMPANY_ADDRESS}
+      - NEXT_PUBLIC_COMPANY_PHONE=${NEXT_PUBLIC_COMPANY_PHONE}
+      - NEXT_PUBLIC_COMPANY_BUSINESS_HOURS=${NEXT_PUBLIC_COMPANY_BUSINESS_HOURS}
     restart: unless-stopped
     volumes:
       - ./logs:/app/logs

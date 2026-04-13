@@ -24,6 +24,7 @@ import { logout } from "@/lib/store/auth-slice";
 const nav = [
   { href: "/products", label: "Shop" },
   { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export function SiteHeader() {

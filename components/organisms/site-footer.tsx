@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Logo } from "@/components/atoms/logo";
-import { SITE_NAME } from "@/lib/constants";
+import { COMPANY_ADDRESS, COMPANY_PHONE, SITE_NAME } from "@/lib/constants";
 
 export function SiteFooter() {
   return (
@@ -30,6 +30,11 @@ export function SiteFooter() {
                   About us
                 </Link>
               </li>
+              <li>
+                <Link href="/contact" className="hover:text-primary">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
@@ -49,6 +54,14 @@ export function SiteFooter() {
               </li>
             </ul>
           </div>
+        </div>
+        <div className="mt-8 rounded-2xl border border-border/60 bg-background/70 p-4 text-sm text-muted-foreground">
+          <p>
+            <span className="font-medium text-foreground">Address:</span> {COMPANY_ADDRESS}
+          </p>
+          <p className="mt-1">
+            <span className="font-medium text-foreground">Phone:</span> {COMPANY_PHONE}
+          </p>
         </div>
         <div className="mt-10 border-t border-border/60 pt-8 text-center text-xs text-muted-foreground">
           © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.

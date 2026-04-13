@@ -76,6 +76,19 @@ export async function resetPassword(body: {
   });
 }
 
+export async function submitContact(body: {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}) {
+  return apiFetch<{ status: string; message: string }>("/contact", {
+    method: "POST",
+    body: JSON.stringify(body),
+    skipAuth: true,
+  });
+}
+
 /* ——— Products (public) ——— */
 
 export async function listProducts(params?: { type?: "digital" | "physical" }) {
