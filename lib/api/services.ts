@@ -51,6 +51,31 @@ export async function updatePassword(body: {
   );
 }
 
+export async function forgotPassword(body: { email: string }) {
+  return apiFetch<{ status: string; message: string }>("/users/forgotPassword", {
+    method: "POST",
+    body: JSON.stringify(body),
+    skipAuth: true,
+  });
+}
+
+export async function resetPassword(body: {
+  token: string;
+  password: string;
+  passwordConfirm: string;
+}) {
+  return apiFetch<{
+    status: string;
+    message: string;
+    token: string;
+    data: { user: User };
+  }>("/users/resetPassword", {
+    method: "POST",
+    body: JSON.stringify(body),
+    skipAuth: true,
+  });
+}
+
 /* ——— Products (public) ——— */
 
 export async function listProducts(params?: { type?: "digital" | "physical" }) {
