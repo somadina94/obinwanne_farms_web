@@ -17,6 +17,7 @@ import { submitContact } from "@/lib/api/services";
 import {
   COMPANY_ADDRESS,
   COMPANY_BUSINESS_HOURS,
+  COMPANY_EMAIL,
   COMPANY_PHONE,
   SITE_NAME,
 } from "@/lib/constants";
@@ -81,6 +82,12 @@ export default function ContactPage() {
               <p className="flex items-center gap-3">
                 <Phone className="size-4 text-primary" />
                 <span>{COMPANY_PHONE}</span>
+              </p>
+              <p>
+                Email:{" "}
+                <a href={`mailto:${COMPANY_EMAIL}`} className="font-medium text-primary hover:underline">
+                  {COMPANY_EMAIL}
+                </a>
               </p>
             </div>
             <p className="text-xs">Business hours: {COMPANY_BUSINESS_HOURS}.</p>

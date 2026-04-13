@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Logo } from "@/components/atoms/logo";
-import { COMPANY_ADDRESS, COMPANY_PHONE, SITE_NAME } from "@/lib/constants";
+import { COMPANY_ADDRESS, COMPANY_EMAIL, COMPANY_PHONE, SITE_NAME } from "@/lib/constants";
 
 export function SiteFooter() {
   return (
@@ -61,6 +61,32 @@ export function SiteFooter() {
           </p>
           <p className="mt-1">
             <span className="font-medium text-foreground">Phone:</span> {COMPANY_PHONE}
+          </p>
+          <p className="mt-1">
+            <span className="font-medium text-foreground">Email:</span>{" "}
+            <a href={`mailto:${COMPANY_EMAIL}`} className="text-primary hover:underline">
+              {COMPANY_EMAIL}
+            </a>
+          </p>
+        </div>
+        <div className="mt-6 rounded-2xl border border-primary/25 bg-gradient-to-r from-primary/10 via-background to-primary/5 px-5 py-4 text-center">
+          <p className="text-[11px] font-semibold tracking-[0.22em] text-primary/90">
+            MADE BY JAHBYTE TECHNOLOGIES
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            <a href="mailto:support@jahbyte.com" className="font-medium text-primary hover:underline">
+              support@jahbyte.com
+            </a>
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            <a
+              href="https://www.jahbyte.com"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-primary hover:underline"
+            >
+              www.jahbyte.com
+            </a>
           </p>
         </div>
         <div className="mt-10 border-t border-border/60 pt-8 text-center text-xs text-muted-foreground">
