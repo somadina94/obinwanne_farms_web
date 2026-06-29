@@ -1,67 +1,60 @@
-# Use the official Node.js runtime as the base image
-FROM node:22-alpine AS base
+# Stage 1: Build
+FROM node:24-alpine AS builder
 
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Accept build arguments
-ARG NEXT_PUBLIC_API_BASE_URL
-ARG INTERNAL_API_ORIGIN=http://host.docker.internal:6600
+ARG NEXT_PUBLIC_API_URL
+ARG INTERNAL_API_ORIGIN
+ARG NEXT_PUBLIC_COMPANY_ADDRESS
+ARG NEXT_PUBLIC_COMPANY_PHONE
+ARG NEXT_PUBLIC_COMPANY_EMAIL
+ARG NEXT_PUBLIC_COMPANY_BUSINESS_HOURS
+ARG NEXT_PUBLIC_COMPANY_LATITUDE
+ARG NEXT_PUBLIC_COMPANY_LONGITUDE
 
-# Set environment variables for build
-ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV INTERNAL_API_ORIGIN=$INTERNAL_API_ORIGIN
-
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
+ENV NEXT_PUBLIC_COMPANY_ADDRESS=$NEXT_PUBLIC_COMPANY_ADDRESS
+ENV NEXT_PUBLIC_COMPANY_PHONE=$NEXT_PUBLIC_COMPANY_PHONE
+ENV NEXT_PUBLIC_COMPANY_EMAIL=$NEXT_PUBLIC_COMPANY_EMAIL
+ENV NEXT_PUBLIC_COMPANY_BUSINESS_HOURS=$NEXT_PUBLIC_COMPANY_BUSINESS_HOURS
+ENV NEXT_PUBLIC_COMPANY_LATITUDE=$NEXT_PUBLIC_COMPANY_LATITUDE
+ENV NEXT_PUBLIC_COMPANY_LONGITUDE=$NEXT_PUBLIC_COMPANY_LONGITUDE
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build
+RUN npm run build \
+  && test -d /app/public \
+  && test -d /app/.next/standalone \
+  && test -d /app/.next/static
 
-# Production image, copy all the files and run next
-FROM base AS runner
+# Stage 2: Production image
+FROM node:24-alpine
+
 WORKDIR /app
 
 ENV NODE_ENV=production
-# Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+RUN mkdir .next && chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@swc/helpers ./node_modules/@swc/helpers
 
 USER nextjs
 
 EXPOSE 6601
 
 ENV PORT=6601
-# set hostname to localhost
 ENV HOSTNAME="0.0.0.0"
 
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD ["node", "server.js"] 
+CMD ["node", "server.js"]

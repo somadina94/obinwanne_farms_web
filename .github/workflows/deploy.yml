@@ -12,18 +12,49 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate VPS secrets
+        run: |
+          missing=0
+          [ -n "${{ secrets.VPS_HOST }}" ] || { echo "::error::VPS_HOST secret is not set on this repository"; missing=1; }
+          [ -n "${{ secrets.VPS_USERNAME }}" ] || { echo "::error::VPS_USERNAME secret is not set on this repository"; missing=1; }
+          [ -n "${{ secrets.VPS_PASSWORD }}" ] || { echo "::error::VPS_PASSWORD secret is not set on this repository"; missing=1; }
+          [ -n "${{ secrets.VPS_PORT }}" ] || { echo "::error::VPS_PORT secret is not set on this repository"; missing=1; }
+          exit "$missing"
+
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT }}
+          timeout: 60s
+          command_timeout: 30m
+          debug: true
           script: |
             set -e
-            cd ~/obinwanne_farms/web
-            git fetch origin
-            git checkout "${{ github.ref_name }}"
-            git pull origin "${{ github.ref_name }}"
+            APP_DIR="$HOME/obinwanne_farms/web"
+            REPO="https://github.com/somadina94/obinwanne_farms_web.git"
+            BRANCH="${{ github.ref_name }}"
+
+            mkdir -p "$(dirname "$APP_DIR")"
+
+            if [ -d "$APP_DIR/.git" ] && git -C "$APP_DIR" remote get-url origin 2>/dev/null | grep -qi obinwanne_farms_web; then
+              cd "$APP_DIR"
+              git fetch origin
+              git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH" "origin/$BRANCH"
+              git reset --hard "origin/$BRANCH"
+            else
+              ENV_BAK=$(mktemp)
+              LOGS_BAK=$(mktemp -d)
+              [ -f "$APP_DIR/.env" ] && cp "$APP_DIR/.env" "$ENV_BAK"
+              [ -d "$APP_DIR/logs" ] && cp -a "$APP_DIR/logs/." "$LOGS_BAK/" 2>/dev/null || true
+              rm -rf "$APP_DIR"
+              git clone -b "$BRANCH" "$REPO" "$APP_DIR"
+              cd "$APP_DIR"
+              [ -s "$ENV_BAK" ] && cp "$ENV_BAK" .env
+              [ "$(ls -A "$LOGS_BAK" 2>/dev/null)" ] && mkdir -p logs && cp -a "$LOGS_BAK/." logs/
+            fi
+
             chmod +x ./deploy.sh
-            ./deploy.sh
+            DEPLOY_BRANCH="$BRANCH" ./deploy.sh
