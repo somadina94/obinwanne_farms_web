@@ -8,6 +8,25 @@ echo "🐳 Starting Docker deployment of Obinwanne Farms Web..."
 
 REPO_URL="https://github.com/somadina94/obinwanne_farms_web.git"
 
+load_env_file() {
+    local file="$1"
+    while IFS= read -r line || [ -n "$line" ]; do
+        [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
+        local key="${line%%=*}"
+        local value="${line#*=}"
+        key="${key#"${key%%[![:space:]]*}"}"
+        key="${key%"${key##*[![:space:]]}"}"
+        value="${value#"${value%%[![:space:]]*}"}"
+        value="${value%"${value##*[![:space:]]}"}"
+        if [[ "$value" == \"*\" && "$value" == *\" ]]; then
+            value="${value:1:${#value}-2}"
+        elif [[ "$value" == \'*\' && "$value" == *\' ]]; then
+            value="${value:1:${#value}-2}"
+        fi
+        export "${key}=${value}"
+    done < "$file"
+}
+
 sync_code() {
     if [ -d .git ] && git remote get-url origin 2>/dev/null | grep -qi "obinwanne_farms_web"; then
         echo "📥 Fetching latest code..."
@@ -97,13 +116,13 @@ echo "🔍 Checking for environment variables..."
 if [ -f ".env" ]; then
     echo "✅ .env file found"
     echo "📤 Exporting environment variables..."
-    export $(cat .env | xargs)
+    load_env_file ".env"
     echo "✅ Environment variables exported"
 elif [ -f ".env.local" ]; then
     echo "✅ .env.local file found, copying to .env..."
     cp .env.local .env
     echo "📤 Exporting environment variables..."
-    export $(cat .env | xargs)
+    load_env_file ".env"
     echo "✅ Environment variables exported"
 else
     echo "⚠️  No .env or .env.local file found"
