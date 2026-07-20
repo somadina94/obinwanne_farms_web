@@ -1,0 +1,46 @@
+# Production stack for EC2 / VPS — used by ./deploy.sh (project: obinwanne-farms-web-vps)
+#
+# Normal deploy: image from GHCR (built in GitHub Actions). VPS only pulls.
+# The `build:` block is for DEPLOY_BUILD_LOCAL=1 fallback only.
+
+name: obinwanne-farms-web-vps
+
+services:
+  web:
+    image: ${OBINWANNE_WEB_IMAGE:-ghcr.io/somadina94/obinwanne_farms_web:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        INTERNAL_API_ORIGIN: ${INTERNAL_API_ORIGIN:-http://host.docker.internal:6600}
+        NEXT_PUBLIC_COMPANY_ADDRESS: ${NEXT_PUBLIC_COMPANY_ADDRESS}
+        NEXT_PUBLIC_COMPANY_PHONE: ${NEXT_PUBLIC_COMPANY_PHONE}
+        NEXT_PUBLIC_COMPANY_EMAIL: ${NEXT_PUBLIC_COMPANY_EMAIL}
+        NEXT_PUBLIC_COMPANY_BUSINESS_HOURS: ${NEXT_PUBLIC_COMPANY_BUSINESS_HOURS}
+        NEXT_PUBLIC_COMPANY_LATITUDE: ${NEXT_PUBLIC_COMPANY_LATITUDE}
+        NEXT_PUBLIC_COMPANY_LONGITUDE: ${NEXT_PUBLIC_COMPANY_LONGITUDE}
+    container_name: obinwanne-farms-web
+    ports:
+      - "6601:6601"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      INTERNAL_API_ORIGIN: ${INTERNAL_API_ORIGIN:-http://host.docker.internal:6600}
+      NEXT_PUBLIC_COMPANY_ADDRESS: ${NEXT_PUBLIC_COMPANY_ADDRESS}
+      NEXT_PUBLIC_COMPANY_PHONE: ${NEXT_PUBLIC_COMPANY_PHONE}
+      NEXT_PUBLIC_COMPANY_EMAIL: ${NEXT_PUBLIC_COMPANY_EMAIL}
+      NEXT_PUBLIC_COMPANY_BUSINESS_HOURS: ${NEXT_PUBLIC_COMPANY_BUSINESS_HOURS}
+      NEXT_PUBLIC_COMPANY_LATITUDE: ${NEXT_PUBLIC_COMPANY_LATITUDE}
+      NEXT_PUBLIC_COMPANY_LONGITUDE: ${NEXT_PUBLIC_COMPANY_LONGITUDE}
+      NODE_ENV: production
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - obinwanne-farms-web-vps-network
+
+networks:
+  obinwanne-farms-web-vps-network:
+    driver: bridge
